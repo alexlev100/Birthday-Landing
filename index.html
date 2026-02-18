@@ -49,9 +49,11 @@
         min-height: 100vh;
         padding: 1.1rem;
         display: grid;
-        align-items: center;
+        align-items: start;
+        justify-items: center;
         scroll-snap-align: start;
         position: relative;
+        overflow: hidden;
         background: radial-gradient(circle at 88% 2%, rgba(239, 91, 0, 0.09), transparent 45%),
           radial-gradient(circle at 3% 90%, rgba(0, 0, 0, 0.08), transparent 44%), var(--paper);
       }
@@ -68,12 +70,15 @@
       }
 
       .content {
+        --fit-scale: 1;
         position: relative;
         z-index: 1;
         width: min(100%, 460px);
         margin: 0 auto;
         display: grid;
         gap: 0.85rem;
+        transform: scale(var(--fit-scale));
+        transform-origin: top center;
       }
 
       .slogan {
@@ -100,9 +105,10 @@
       }
 
       .hero-heading {
-        font-size: clamp(1.5rem, 9vw, 2.5rem);
+        font-size: clamp(1.2rem, 6.7vw, 2rem);
         justify-self: center;
         text-align: center;
+        line-height: 0.95;
       }
 
       .hero-frame {
@@ -309,6 +315,17 @@
         text-align: center;
       }
 
+      .schedule-line {
+        white-space: nowrap;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        font-size: clamp(0.64rem, 3.4vw, 0.92rem);
+        letter-spacing: 0.015em;
+        text-transform: none;
+        padding: 0.45rem 0.5rem;
+      }
+
       .slideshow-stage {
         width: min(92vw, 500px);
         aspect-ratio: 16 / 10;
@@ -368,7 +385,7 @@
     <main class="landing" id="landing">
       <section class="screen" id="screen-1" aria-label="Первый экран">
         <div class="content">
-          <h1 class="slogan hero-heading">Ты приглашен на день рождения</h1>
+          <h1 class="slogan hero-heading">Ты приглашен<br />на день рождения</h1>
 
           <div class="hero-frame">
             <img class="hero-image" src="IMG_1285.PNG" alt="Плакат приглашения" />
@@ -448,8 +465,7 @@
             <img src="assets/multivan-route.gif" alt="Volkswagen Multivan едет из Москвы в пункт назначения" />
           </div>
 
-          <h3 class="slogan">Время проведения</h3>
-          <p class="slogan-strip date-tag">20-22 февраля</p>
+          <p class="slogan-strip date-tag schedule-line">Время проведения 20-22 февраля</p>
         </div>
       </section>
 
@@ -471,6 +487,35 @@
         screens[index].scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
+      function fitScreenContent(screen) {
+        const content = screen.querySelector(".content");
+        if (!content) return;
+
+        content.style.setProperty("--fit-scale", "1");
+
+        const styles = getComputedStyle(screen);
+        const padY = parseFloat(styles.paddingTop) + parseFloat(styles.paddingBottom);
+        const padX = parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight);
+        const availableHeight = window.innerHeight - padY;
+        const availableWidth = screen.clientWidth - padX;
+        const naturalHeight = content.scrollHeight;
+        const naturalWidth = content.scrollWidth;
+
+        let scale = Math.min(1, availableHeight / naturalHeight, availableWidth / naturalWidth);
+        if (!Number.isFinite(scale) || scale <= 0) scale = 1;
+        content.style.setProperty("--fit-scale", scale.toFixed(3));
+      }
+
+      function fitAllScreens() {
+        screens.forEach((screen) => fitScreenContent(screen));
+      }
+
+      function scheduleFit() {
+        requestAnimationFrame(() => {
+          fitAllScreens();
+        });
+      }
+
       document.getElementById("understoodBtn").addEventListener("click", () => {
         scrollToScreen(1);
       });
@@ -488,10 +533,12 @@
 
       function showSpecialNotice() {
         specialNotice.hidden = false;
+        scheduleFit();
       }
 
       function hideSpecialNotice() {
         specialNotice.hidden = true;
+        scheduleFit();
       }
 
       function tryMoveToThird() {
@@ -632,7 +679,13 @@
       Promise.all(preloadChecks).then((results) => {
         const valid = results.filter(Boolean);
         startCarousel(valid.length ? valid : fallbackSlides);
+        scheduleFit();
       });
+
+      window.addEventListener("load", scheduleFit);
+      window.addEventListener("resize", scheduleFit);
+      window.addEventListener("orientationchange", scheduleFit);
+      setTimeout(scheduleFit, 100);
 
       landing.addEventListener(
         "wheel",
