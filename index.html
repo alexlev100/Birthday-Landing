@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ты приглашен</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&family=Russo+One&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --paper: #e9d4b3;
+        --ink: #111111;
+        --accent: #ef5b00;
+        --soft-ink: #252525;
+        --muted: #f4ead6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background: var(--paper);
+        color: var(--ink);
+      }
+
+      body {
+        font-family: "Oswald", sans-serif;
+        letter-spacing: 0.02em;
+      }
+
+      .landing {
+        height: 100vh;
+        overflow-y: auto;
+        scroll-snap-type: y mandatory;
+        scroll-behavior: smooth;
+      }
+
+      .screen {
+        min-height: 100vh;
+        padding: 1.1rem;
+        display: grid;
+        align-items: center;
+        scroll-snap-align: start;
+        position: relative;
+        background: radial-gradient(circle at 88% 2%, rgba(239, 91, 0, 0.09), transparent 45%),
+          radial-gradient(circle at 3% 90%, rgba(0, 0, 0, 0.08), transparent 44%), var(--paper);
+      }
+
+      .screen::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: radial-gradient(circle, rgba(0, 0, 0, 0.07) 0.8px, transparent 0.8px);
+        background-size: 4px 4px;
+        mix-blend-mode: multiply;
+        opacity: 0.1;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        width: min(100%, 460px);
+        margin: 0 auto;
+        display: grid;
+        gap: 0.85rem;
+      }
+
+      .slogan {
+        margin: 0;
+        text-transform: uppercase;
+        font-family: "Russo One", sans-serif;
+        letter-spacing: 0.05em;
+        line-height: 1;
+        color: var(--accent);
+        text-shadow: 2px 2px 0 var(--ink);
+      }
+
+      .slogan-strip {
+        display: inline-block;
+        margin: 0;
+        padding: 0.5rem 0.75rem;
+        text-transform: uppercase;
+        font-family: "Russo One", sans-serif;
+        color: var(--accent);
+        background: var(--ink);
+        letter-spacing: 0.07em;
+        line-height: 1.05;
+        border: 1px solid var(--ink);
+      }
+
+      .hero-heading {
+        font-size: clamp(1.5rem, 9vw, 2.5rem);
+        justify-self: center;
+        text-align: center;
+      }
+
+      .hero-frame {
+        border: 4px solid var(--ink);
+        box-shadow: 8px 8px 0 var(--ink);
+        background: #f2e7d4;
+        overflow: hidden;
+      }
+
+      .hero-image {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .hero-cta {
+        margin-top: 0.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.7rem;
+      }
+
+      .hero-note {
+        margin: 0;
+        font-size: clamp(1rem, 5vw, 1.45rem);
+      }
+
+      .btn {
+        border: 2px solid var(--ink);
+        background: var(--accent);
+        color: var(--muted);
+        text-transform: uppercase;
+        font-family: "Russo One", sans-serif;
+        font-size: 0.95rem;
+        letter-spacing: 0.07em;
+        padding: 0.65rem 1.1rem;
+        cursor: pointer;
+      }
+
+      .panel {
+        border: 3px solid var(--ink);
+        padding: 0.95rem;
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 6px 6px 0 var(--ink);
+      }
+
+      .field {
+        display: grid;
+        gap: 0.35rem;
+      }
+
+      .field label {
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        font-family: "Russo One", sans-serif;
+      }
+
+      .special-hint {
+        margin: 0;
+        margin-top: 0.45rem;
+        padding: 0.5rem 0.7rem;
+        border: 2px solid var(--ink);
+        background: var(--ink);
+        color: var(--accent);
+        text-transform: uppercase;
+        font-family: "Russo One", sans-serif;
+        font-size: clamp(0.95rem, 4.3vw, 1.25rem);
+        letter-spacing: 0.06em;
+        justify-self: start;
+      }
+
+      select {
+        width: 100%;
+        border: 2px solid var(--ink);
+        background: #fffdfa;
+        color: var(--ink);
+        padding: 0.72rem;
+        font: inherit;
+      }
+
+      select:focus,
+      .btn:focus {
+        outline: 3px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .time-picker {
+        display: grid;
+        gap: 0.55rem;
+      }
+
+      .drum-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.55rem;
+      }
+
+      .drum-col {
+        display: grid;
+        gap: 0.3rem;
+      }
+
+      .drum-label {
+        margin: 0;
+        text-transform: uppercase;
+        font-family: "Russo One", sans-serif;
+        font-size: 0.8rem;
+      }
+
+      .drum-shell {
+        position: relative;
+        border: 2px solid var(--ink);
+        background: #fffdfa;
+      }
+
+      .drum-shell::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 2.45rem;
+        border-top: 2px solid rgba(17, 17, 17, 0.2);
+        border-bottom: 2px solid rgba(17, 17, 17, 0.2);
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .drum {
+        height: 11rem;
+        overflow-y: auto;
+        scroll-snap-type: y mandatory;
+        scrollbar-width: none;
+        padding-block: 4.2rem;
+      }
+
+      .drum::-webkit-scrollbar {
+        display: none;
+      }
+
+      .drum-item {
+        height: 2.45rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        scroll-snap-align: center;
+        font-family: "Russo One", sans-serif;
+        font-size: 1.08rem;
+      }
+
+      .drum-item.active {
+        color: var(--accent);
+      }
+
+      .time-value {
+        margin: 0;
+        font-family: "Russo One", sans-serif;
+        color: var(--ink);
+      }
+
+      .hint {
+        margin: 0;
+        font-size: 0.88rem;
+        color: #2f2f2f;
+      }
+
+      .map-wrap {
+        border: 3px solid var(--ink);
+        box-shadow: 6px 6px 0 var(--ink);
+        background: #fff;
+        overflow: hidden;
+      }
+
+      .map-wrap iframe {
+        display: block;
+        width: 100%;
+        height: 220px;
+        border: 0;
+      }
+
+      .gif-card {
+        border: 3px solid var(--ink);
+        box-shadow: 6px 6px 0 var(--ink);
+        background: #fff;
+        overflow: hidden;
+      }
+
+      .gif-card img {
+        display: block;
+        width: 100%;
+      }
+
+      .address-line {
+        margin: 0;
+        font-size: 0.92rem;
+        line-height: 1.2;
+        color: var(--soft-ink);
+      }
+
+      .date-tag {
+        justify-self: center;
+        text-align: center;
+      }
+
+      .slideshow-stage {
+        width: min(92vw, 500px);
+        aspect-ratio: 16 / 10;
+        margin: 0 auto;
+        border: 4px solid var(--ink);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 8px 8px 0 var(--ink);
+        background: #1c1c1c;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transform: scale(1.03);
+        transition: opacity 0.45s ease, transform 0.8s ease;
+      }
+
+      .slide.active {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .landing {
+          scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+
+      @media (min-width: 840px) {
+        .screen {
+          padding: 1.3rem;
+        }
+
+        .content {
+          width: min(100%, 680px);
+        }
+
+        .map-wrap iframe {
+          height: 300px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="landing" id="landing">
+      <section class="screen" id="screen-1" aria-label="Первый экран">
+        <div class="content">
+          <h1 class="slogan hero-heading">Ты приглашен на день рождения</h1>
+
+          <div class="hero-frame">
+            <img class="hero-image" src="IMG_1285.PNG" alt="Плакат приглашения" />
+          </div>
+
+          <div class="hero-cta">
+            <p class="slogan-strip hero-note">Если понял, кивни!</p>
+            <button class="btn" id="understoodBtn" aria-label="Понял">понял</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-2" aria-label="Выбор гостя и времени">
+        <div class="content">
+          <h2 class="slogan">Подтверди участие</h2>
+
+          <form class="panel" id="guestForm" novalidate>
+            <div class="field">
+              <label for="guest">Имя гостя</label>
+              <select id="guest" name="guest" required aria-label="Выберите имя гостя">
+                <option value="">Выберите имя</option>
+                <option>Варя</option>
+                <option>Белла</option>
+                <option>Гарик</option>
+                <option>Шурик</option>
+                <option>Катя</option>
+                <option>Илюха Л.</option>
+                <option>Илюха Ш.</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="arrival">Планируемое время приезда</label>
+              <div class="time-picker" aria-label="Выберите время на барабанах">
+                <div class="drum-row">
+                  <div class="drum-col">
+                    <p class="drum-label">Часы</p>
+                    <div class="drum-shell">
+                      <div class="drum" id="hourDrum" tabindex="0" aria-label="Барабан часов"></div>
+                    </div>
+                  </div>
+                  <div class="drum-col">
+                    <p class="drum-label">Минуты</p>
+                    <div class="drum-shell">
+                      <div class="drum" id="minuteDrum" tabindex="0" aria-label="Барабан минут"></div>
+                    </div>
+                  </div>
+                </div>
+                <p class="time-value" id="timeValue">Выбрано время: --:--</p>
+                <input id="arrival" name="arrival" type="hidden" required />
+                <p class="special-hint" id="specialNotice" aria-live="assertive" hidden>Не время болеть!</p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-3" aria-label="Место и даты проведения">
+        <div class="content">
+          <h2 class="slogan">Место проведения</h2>
+          <p class="slogan-strip">Гостевой дом Никитское подворье</p>
+          <p class="address-line">
+            Адрес: Россия, Ярославская область, Переславль-Залесский муниципальный округ, Красная Деревня,
+            Совхозная улица, 65 (координаты 56.788750, 38.867879).
+          </p>
+
+          <div class="map-wrap" aria-label="Карта маршрута">
+            <iframe
+              title="Карта Москва - Никитское подворье"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps?hl=ru&q=56.788750,38.867879&z=6&output=embed"
+            ></iframe>
+          </div>
+
+          <div class="gif-card">
+            <img src="assets/multivan-route.gif" alt="Volkswagen Multivan едет из Москвы в пункт назначения" />
+          </div>
+
+          <h3 class="slogan">Время проведения</h3>
+          <p class="slogan-strip date-tag">20-22 февраля</p>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-4" aria-label="Слайдшоу дома">
+        <div class="content">
+          <h2 class="slogan">Дом и атмосфера</h2>
+
+          <div class="slideshow-stage" id="slideshowStage" aria-live="polite"></div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const landing = document.getElementById("landing");
+      const screens = Array.from(document.querySelectorAll(".screen"));
+
+      function scrollToScreen(index) {
+        if (!screens[index]) return;
+        screens[index].scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      document.getElementById("understoodBtn").addEventListener("click", () => {
+        scrollToScreen(1);
+      });
+
+      const guestSelect = document.getElementById("guest");
+      const arrivalInput = document.getElementById("arrival");
+      const timeValue = document.getElementById("timeValue");
+      const hourDrum = document.getElementById("hourDrum");
+      const minuteDrum = document.getElementById("minuteDrum");
+      const specialNotice = document.getElementById("specialNotice");
+      let movedToThird = false;
+      let moveTimer = null;
+      let selectedHour = "--";
+      let selectedMinute = "--";
+
+      function showSpecialNotice() {
+        specialNotice.hidden = false;
+      }
+
+      function hideSpecialNotice() {
+        specialNotice.hidden = true;
+      }
+
+      function tryMoveToThird() {
+        const complete = guestSelect.value.trim() !== "" && arrivalInput.value.trim() !== "";
+        if (moveTimer) {
+          clearTimeout(moveTimer);
+          moveTimer = null;
+          movedToThird = false;
+        }
+        if (!complete) {
+          movedToThird = false;
+          hideSpecialNotice();
+          return;
+        }
+        if (complete && !movedToThird) {
+          movedToThird = true;
+          if (guestSelect.value === "Илюха Ш.") {
+            showSpecialNotice();
+            moveTimer = setTimeout(() => {
+              hideSpecialNotice();
+              scrollToScreen(2);
+            }, 3000);
+            return;
+          }
+          hideSpecialNotice();
+          moveTimer = setTimeout(() => scrollToScreen(2), 250);
+        }
+      }
+
+      function fillDrum(drum, values, onValue) {
+        values.forEach((value) => {
+          const item = document.createElement("div");
+          item.className = "drum-item";
+          item.textContent = value;
+          drum.appendChild(item);
+        });
+
+        const items = Array.from(drum.querySelectorAll(".drum-item"));
+        const itemHeight = items[0]?.getBoundingClientRect().height || 40;
+
+        function selectByIndex(index, smooth, userAction) {
+          const safe = Math.max(0, Math.min(values.length - 1, index));
+          const targetTop = safe * itemHeight;
+          if (Math.abs(drum.scrollTop - targetTop) > 1) {
+            drum.scrollTo({ top: targetTop, behavior: smooth ? "smooth" : "auto" });
+          }
+          items.forEach((item, i) => item.classList.toggle("active", i === safe));
+          onValue(values[safe], userAction);
+        }
+
+        let scrollTimer;
+        drum.addEventListener("scroll", () => {
+          clearTimeout(scrollTimer);
+          scrollTimer = setTimeout(() => {
+            const nearest = Math.round(drum.scrollTop / itemHeight);
+            selectByIndex(nearest, true, true);
+          }, 110);
+        });
+
+        drum.addEventListener("keydown", (event) => {
+          const current = Math.round(drum.scrollTop / itemHeight);
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            selectByIndex(current + 1, true, true);
+          }
+          if (event.key === "ArrowUp") {
+            event.preventDefault();
+            selectByIndex(current - 1, true, true);
+          }
+        });
+
+        requestAnimationFrame(() => selectByIndex(0, false, false));
+      }
+
+      function syncArrivalAndMove() {
+        const timeReady = selectedHour !== "--" && selectedMinute !== "--";
+        arrivalInput.value = timeReady ? `${selectedHour}:${selectedMinute}` : "";
+        timeValue.textContent = `Выбрано время: ${timeReady ? arrivalInput.value : "--:--"}`;
+        tryMoveToThird();
+      }
+
+      const hourValues = ["--", ...Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"))];
+      const minuteValues = ["--", ...Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"))];
+
+      fillDrum(hourDrum, hourValues, (value) => {
+        selectedHour = value;
+        syncArrivalAndMove();
+      });
+
+      fillDrum(minuteDrum, minuteValues, (value) => {
+        selectedMinute = value;
+        syncArrivalAndMove();
+      });
+
+      guestSelect.addEventListener("change", tryMoveToThird);
+
+      const fallbackSlides = ["IMG_1285.PNG", "IMG_1281.JPG", "IMG_1282.JPG"];
+      const cottageSlides = Array.from({ length: 12 }, (_, i) => {
+        const n = String(i + 1).padStart(2, "0");
+        return `assets/slideshow/slide-${n}.jpg`;
+      });
+
+      const stage = document.getElementById("slideshowStage");
+      const slides = [];
+      let active = 0;
+
+      function startCarousel(paths) {
+        if (!stage) return;
+
+        stage.innerHTML = "";
+        paths.forEach((path, idx) => {
+          const img = document.createElement("img");
+          img.src = path;
+          img.alt = `Слайд ${idx + 1}`;
+          img.className = "slide" + (idx === 0 ? " active" : "");
+          stage.appendChild(img);
+          slides.push(img);
+        });
+
+        if (slides.length < 2) return;
+        setInterval(() => {
+          slides[active].classList.remove("active");
+          active = (active + 1) % slides.length;
+          slides[active].classList.add("active");
+        }, 3000);
+      }
+
+      const preloadChecks = cottageSlides.map(
+        (src) =>
+          new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve(src);
+            img.onerror = () => resolve(null);
+            img.src = src;
+          }),
+      );
+
+      Promise.all(preloadChecks).then((results) => {
+        const valid = results.filter(Boolean);
+        startCarousel(valid.length ? valid : fallbackSlides);
+      });
+
+      landing.addEventListener(
+        "wheel",
+        (event) => {
+          const atEnd = landing.scrollTop + landing.clientHeight >= landing.scrollHeight - 1;
+          const atStart = landing.scrollTop <= 0;
+          if ((atEnd && event.deltaY > 0) || (atStart && event.deltaY < 0)) {
+            event.preventDefault();
+          }
+        },
+        { passive: false },
+      );
+    </script>
+  </body>
+</html>
